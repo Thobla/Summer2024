@@ -3,6 +3,7 @@
 #include<algorithm>
 #include<math.h>
 #include<vector>
+#include <array>
 #include<sstream>
 
 /*
@@ -43,6 +44,16 @@ class Tic_Tac_Game{
             Game_state() : terminated(0), curr_player(0) {};
         };
 
+        struct Environment{
+            int x_table;
+            int o_table;
+            int blank_table;
+            int reward;
+            int curr_player;
+            int terminated;
+        };
+
+
 
         Board get_board(){return tic_tac_board;};
         Game_state get_state(){return state;};
@@ -55,7 +66,55 @@ class Tic_Tac_Game{
             state.curr_player = 0;
         }
 
+        Environment step(int abstract = 0, std::array<int, 2> xy = {0, 0}){
+            int x = xy[0];
+            int y = xy[1];
+            int reward = 0;
+            Environment env;
+            if(!abstract){
+                std::string input;
+                std::vector<std::string> command = {"0", "0"};
+                if (state.curr_player == 0){
+                    std::cout << "p1's your move \n";
+                }
+                else if (state.curr_player == 1){
+                    std::cout << "p2's your move \n";
+                };
 
+                std::cout <<"type in your move as 'x y'." << std::endl;
+                std::getline(std::cin, input); //Need to refactor at some time to check input correctness
+                command = split(input, ' ');
+                x = stoi(command[0]);
+                y = stoi(command[1]);
+            }
+
+            if (valid_move(x, y)){
+                perform_placement(x, y, state.curr_player);
+            }
+            else{
+                if(!abstract){}
+                std::cout << "Not a valid placement" << std::endl;
+                return env;
+            };
+            state.terminated = game_done();
+            if(!abstract){
+                if(state.terminated == 1){std::cout << "No winner" << std::endl;}
+                if(state.terminated == 2){std::cout << "Winner is player " << state.curr_player + 1 << std::endl;}
+            }
+            state.curr_player = (state.curr_player + 1) % 2;
+            if(state.terminated == 2){reward = 1;}
+            else{reward = 0;};
+            env = {tic_tac_board.x_table, tic_tac_board.o_table, tic_tac_board.blank_table, reward, state.curr_player, state.terminated};
+            return env;
+        };
+
+        std::vector<int> legal_moves(){
+            std::vector<int> legal_moves;
+            for (int i = 0; i < 9; i++) {
+                if((tic_tac_board.blank_table & (1<<i)) == 1){legal_moves.push_back(i);};
+            }
+            return legal_moves;
+        };
 
     private:
         Board tic_tac_board;
@@ -125,38 +184,4 @@ class Tic_Tac_Game{
                 std::cout << "\n";
             }
         }
-        void step(int abstract){
-            int x, y;
-            if(!abstract){
-                std::string input;
-                std::vector<std::string> command = {"0", "0"};
-                if (state.curr_player == 0){
-                    std::cout << "p1's your move \n";
-                }
-                else if (state.curr_player == 1){
-                    std::cout << "p2's your move \n";
-                };
-
-                std::cout <<"type in your move as 'x y'." << std::endl;
-                std::getline(std::cin, input); //Need to refactor at some time to check input correctness
-                command = split(input, ' ');
-                x = stoi(command[0]);
-                y = stoi(command[1]);
-            }
-
-            if (valid_move(x, y)){
-                perform_placement(x, y, state.curr_player);
-            }
-            else{
-                if(!abstract){}
-                std::cout << "Not a valid placement" << std::endl;
-                return;
-            };
-            state.terminated = game_done();
-            if(!abstract){
-                if(state.terminated == 1){std::cout << "No winner" << std::endl;}
-                if(state.terminated == 2){std::cout << "Winner is player " << state.curr_player + 1 << std::endl;}
-            }
-            state.curr_player = (state.curr_player + 1) % 2;
-        };
 };
