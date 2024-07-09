@@ -1,27 +1,35 @@
 #include "Gui.h"
+#include <string>
+#include <vector>
 #include <iostream>
 
 Gui::Gui(){}
 
 void Gui::displayBoard(Board &board){
-    int intIndex = -1;
-    std::cout << "------------------\n";
+    int intIndex = 0;
+    std::vector<std::string> drawing;
+    std::string currString;
+
+    //std::cout << "------------------\n";
     for (int i = 0; i < 8; i++) {
-        std::cout << "|";
+        currString = "";
+        currString += '|';
         for (int j = 0; j < 8; j++){
-            std::cout << "|";
             for (char chars : board.getChars()){
-                if(board.getBitboard(chars) & (1<<intIndex)){
-                    std::cout << chars;
+                if(board.getBitboard(chars) & (1LL<<intIndex)){
+                    currString += chars;
+                    intIndex += 1;
                     break;
                 }
             }
-
-
-            intIndex += 1;
+            currString += '|';
         }
-        std::cout << "|\n------------------" << std::endl;
+        drawing.push_back(currString);
     }
+    for (int i = 7; i >= 0; i--) {
+        std::cout << drawing[i] << "\n";
+    }
+    std::cout << std::endl;
 }
 
 void Gui::getUserMove(int &startX, int &startY, int &endX, int &endY){};
