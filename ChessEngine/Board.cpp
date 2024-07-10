@@ -1,5 +1,8 @@
 #include "Board.h"
+#include <math.h>
 #include <vector>
+#include <iostream>
+#include "Judge.h"
 
 Board::Board(){
     chars = {' ', 'p', 'h', 'b', 'r', 'q', 'k', 'P', 'H', 'B', 'R', 'Q', 'K'};
@@ -25,35 +28,102 @@ void Board::initializeBoard(){
     updateSquares();
 };
 
-void Board::makeMove(int startX, int startY, int endX, int endY){};
+void Board::makeMove(int startX, int startY, int endX, int endY, Judge &judge){
+    unsigned long long startSquare = getSquareValue(startX, startY);
+    unsigned long long endSquare = getSquareValue(endX, endY);
+    char startType = getSquareType(startX, startY);
+    char endType = getSquareType(endX, endY);
 
-unsigned long long Board::getBitboard(char pieceType){
+    std::cout << "startType: " << startType << "\n";
+    std::cout << "endType: " << endType << "\n";
+    std::cout << "startSquare: " << startSquare << "\n";
+    std::cout << "endSquare: " << endSquare << "\n";
+
+    updateBitboard(startType, startSquare); // remove type from startSquare
+    updateBitboard(startType, endSquare); // add new type to endSquare
+    updateBitboard(endType, endSquare); // remove previous endSquare type
+
+
+    updateSquares();
+
+    //if(occupiedSquares & )
+
+};
+
+char Board::getSquareType(int x, int y){
+    unsigned long long square = getSquareValue(x, y);
+    if(whiteSquares & square){
+        if(square & wPawns){return 'p';}
+        else if(square & wKnights){return 'h';}
+        else if(square & wBishops){return 'b';}
+        else if(square & wRooks){return 'r';}
+        else if(square & wQueens){return 'q';}
+        else if(square & wKing){return 'k';}
+    }
+    else if(blackSquares & square){
+        if(square & bPawns){return 'P';}
+        else if(square & bKnights){return 'H';}
+        else if(square & bBishops){return 'B';}
+        else if(square & bRooks){return 'R';}
+        else if(square & bQueens){return 'Q';}
+        else if(square & bKing){return 'K';}
+    }
+   
+    return ' ';
+}
+
+unsigned long long Board::getSquareValue(int x, int y){
+    /*
+    unsigned long long square;
+    if(y == 0){
+        if(x == 0){square = 0;}
+        else {square = std::pow(2, x);}
+    }
+    else{
+        if(x == 0){square = std::pow(2, 8*y);}
+        else{square = std::pow(2, x) + std::pow(2, 8*y);};
+    };
+
+    return square;
+    */
+    return std::pow(2, x + 8*y);
+}
+
+unsigned long long *Board::getBitboard(char pieceType){
     switch (pieceType) {
-        case ' ': return freeSquares;
-        case 'p': return wPawns;
-        case 'h': return wKnights;
-        case 'b': return wBishops;
-        case 'r': return wRooks;
-        case 'q': return wQueens;
-        case 'k': return wKing;
-        case 'P': return bPawns;
-        case 'H': return bKnights;
-        case 'B': return bBishops;
-        case 'R': return bRooks;
-        case 'Q': return bQueens;
-        case 'K': return bKing;
+        case ' ': return &freeSquares;
+        case 'p': return &wPawns;
+        case 'h': return &wKnights;
+        case 'b': return &wBishops;
+        case 'r': return &wRooks;
+        case 'q': return &wQueens;
+        case 'k': return &wKing;
+        case 'P': return &bPawns;
+        case 'H': return &bKnights;
+        case 'B': return &bBishops;
+        case 'R': return &bRooks;
+        case 'Q': return &bQueens;
+        case 'K': return &bKing;
         default: return 0;
     }
 };
 
-void Board::setBitboard(char pieceType, long long bitBoard){};
+/*
+ * updates the piece's table by xor-ing the matchValue. if bitBoard contains the value, we remove it, if not, it adds it.
+ * */
+void Board::updateBitboard(char pieceType, unsigned long long matchValue){
+    unsigned long long *bitBoard = getBitboard(pieceType);
+    *bitBoard = *bitBoard ^ matchValue;
+};
 
 std::vector<char> Board::getChars(){return chars;};
 
 void Board::updateSquares(){
-    occupiedSquares = wPawns | wKnights | wBishops | wRooks | wQueens | wKing | bPawns | bKnights | bBishops |
-        bRooks | bQueens | bKing;
+    whiteSquares = wPawns | wKnights | wBishops | wRooks | wQueens | wKing;
+    blackSquares = bPawns | bKnights | bBishops | bRooks | bQueens | bKing;
+    occupiedSquares = whiteSquares | blackSquares;
     freeSquares = ~occupiedSquares;
+
 };
 
 

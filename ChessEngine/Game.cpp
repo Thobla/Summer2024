@@ -28,6 +28,12 @@ void Game::startGame(){};
 void Game::swapPlayer(){};
 void Game::play(){
     gui.displayBoard(board);
+    board.makeMove(1,1,4,4,judge);
+    gui.displayBoard(board);
+    board.makeMove(4,4,1,1,judge);
+    gui.displayBoard(board);
+
+
 };
     
 int main(){

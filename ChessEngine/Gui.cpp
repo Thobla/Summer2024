@@ -16,7 +16,7 @@ void Gui::displayBoard(Board &board){
         currString += '|';
         for (int j = 0; j < 8; j++){
             for (char chars : board.getChars()){
-                if(board.getBitboard(chars) & (1LL<<intIndex)){
+                if(*(board.getBitboard(chars)) & (1LL<<intIndex)){
                     currString += chars;
                     intIndex += 1;
                     break;

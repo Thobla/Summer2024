@@ -1,8 +1,10 @@
 #ifndef JUDGE_H
 #define JUDGE_H
 
-#include "Board.h"
 #include <vector>
+
+class Board;
+
 class Judge{
     public:
         bool isMoveLegal(Board &board, int startX, int startY, int endX, int endY);
