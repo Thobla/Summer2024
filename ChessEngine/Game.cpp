@@ -21,16 +21,22 @@ class Game {
 };
 
  */
-Game::Game() : board(Board()), gui(Gui()), currPlayer(0){};
+Game::Game() : board(Board()), gui(Gui()), judge(Judge()), currPlayer(0){};
 
 void Game::startGame(){};
 
 void Game::swapPlayer(){};
 void Game::play(){
     gui.displayBoard(board);
-    board.makeMove(1,1,4,4,judge);
+    gui.makeMove(board, judge);
     gui.displayBoard(board);
-    board.makeMove(4,4,1,1,judge);
+    gui.makeMove(board, judge);
+    gui.displayBoard(board);
+    gui.makeMove(board, judge);
+    gui.displayBoard(board);
+    gui.makeMove(board, judge);
+    gui.displayBoard(board);
+    gui.makeMove(board, judge);
     gui.displayBoard(board);
 
 

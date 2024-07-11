@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Judge.h"
 
+
 Board::Board(){
     chars = {' ', 'p', 'h', 'b', 'r', 'q', 'k', 'P', 'H', 'B', 'R', 'Q', 'K'};
     initializeBoard();
@@ -34,7 +35,7 @@ void Board::makeMove(int startX, int startY, int endX, int endY, Judge &judge){
     char startType = getSquareType(startX, startY);
     char endType = getSquareType(endX, endY);
 
-    if (judge.isMoveLegal(*this, startX, startY, endX, endY)){
+    if (judge.isMoveLegal(*this, startX, startY, endX, endY, startType)){
 
         std::cout << "startType: " << startType << "\n";
         std::cout << "endType: " << endType << "\n";
@@ -89,7 +90,7 @@ unsigned long long Board::getSquareValue(int x, int y){
 
     return square;
     */
-    return std::pow(2, x + 8*y);
+    return 1ull << (x + 8*y);
 }
 
 unsigned long long *Board::getBitboard(char pieceType){

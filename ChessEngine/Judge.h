@@ -27,6 +27,8 @@ class Judge{
         bool bQueenRule(Board &board, int startX, int startY, int endX, int endY);
         bool bKingRule(Board &board, int startX, int startY, int endX, int endY);
 
+        bool pathCleared(Board &board, int startX, int startY, int endX, int endY);
+
 
 };
 

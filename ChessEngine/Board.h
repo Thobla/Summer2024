@@ -12,11 +12,11 @@ class Board{
         unsigned long long *getBitboard(char pieceType);
         void updateBitboard(char pieceType, unsigned long long matchValue);
         std::vector<char> getChars();
+        unsigned long long occupiedSquares, freeSquares, whiteSquares, blackSquares;
 
     private:
         unsigned long long wPawns, wKnights, wBishops, wRooks, wQueens, wKing;
         unsigned long long bPawns, bKnights, bBishops, bRooks, bQueens, bKing;
-        unsigned long long occupiedSquares, freeSquares, whiteSquares, blackSquares;
         std::vector<char> chars;
         char getSquareType(int x, int y);
         unsigned long long getSquareValue(int x, int y);

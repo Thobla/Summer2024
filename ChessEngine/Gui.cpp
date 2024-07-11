@@ -32,4 +32,17 @@ void Gui::displayBoard(Board &board){
     std::cout << std::endl;
 }
 
-void Gui::getUserMove(int &startX, int &startY, int &endX, int &endY){};
+void Gui::getUserMove(int &startX, int &startY, int &endX, int &endY){
+    std::cout << "Type values for startX, startY, endX and endY, on the form: 'x y x y'";
+    std::cin >> startX >> startY >> endX >> endY;
+};
+
+void Gui::makeMove(Board &board, Judge &judge){
+    int startX, startY, endX, endY;
+    getUserMove(startX, startY, endX, endY);
+    board.makeMove(startX, startY, endX, endY, judge);
+};
+
+
+
+
