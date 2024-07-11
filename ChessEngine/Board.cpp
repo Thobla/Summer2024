@@ -34,17 +34,20 @@ void Board::makeMove(int startX, int startY, int endX, int endY, Judge &judge){
     char startType = getSquareType(startX, startY);
     char endType = getSquareType(endX, endY);
 
-    std::cout << "startType: " << startType << "\n";
-    std::cout << "endType: " << endType << "\n";
-    std::cout << "startSquare: " << startSquare << "\n";
-    std::cout << "endSquare: " << endSquare << "\n";
+    if (judge.isMoveLegal(*this, startX, startY, endX, endY)){
 
-    updateBitboard(startType, startSquare); // remove type from startSquare
-    updateBitboard(startType, endSquare); // add new type to endSquare
-    updateBitboard(endType, endSquare); // remove previous endSquare type
+        std::cout << "startType: " << startType << "\n";
+        std::cout << "endType: " << endType << "\n";
+        std::cout << "startSquare: " << startSquare << "\n";
+        std::cout << "endSquare: " << endSquare << "\n";
+
+        updateBitboard(startType, startSquare); // remove type from startSquare
+        updateBitboard(startType, endSquare); // add new type to endSquare
+        updateBitboard(endType, endSquare); // remove previous endSquare type
 
 
-    updateSquares();
+        updateSquares();
+    }
 
     //if(occupiedSquares & )
 
