@@ -14,20 +14,21 @@ class Judge{
         bool isStale(Board &board);
 
         bool wPawnRule(Board &board, int startX, int startY, int endX, int endY);
-        bool wKnightRule(Board &board, int startX, int startY, int endX, int endY);
+        bool wPonyRule(Board &board, int startX, int startY, int endX, int endY);
         bool wBishopRule(Board &board, int startX, int startY, int endX, int endY);
         bool wRookRule(Board &board, int startX, int startY, int endX, int endY);
         bool wQueenRule(Board &board, int startX, int startY, int endX, int endY);
         bool wKingRule(Board &board, int startX, int startY, int endX, int endY);
 
         bool bPawnRule(Board &board, int startX, int startY, int endX, int endY);
-        bool bKnightRule(Board &board, int startX, int startY, int endX, int endY);
+        bool bPonyRule(Board &board, int startX, int startY, int endX, int endY);
         bool bBishopRule(Board &board, int startX, int startY, int endX, int endY);
         bool bRookRule(Board &board, int startX, int startY, int endX, int endY);
         bool bQueenRule(Board &board, int startX, int startY, int endX, int endY);
         bool bKingRule(Board &board, int startX, int startY, int endX, int endY);
 
         bool pathCleared(Board &board, int startX, int startY, int endX, int endY);
+        bool pathSemiCleared(Board &board, int startX, int startY, int endX, int endY);
 
 
 };
