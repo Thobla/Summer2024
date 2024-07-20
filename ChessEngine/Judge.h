@@ -20,6 +20,16 @@ class Judge{
         bool wQueenRule(Board &board, int startX, int startY, int endX, int endY);
         bool wKingRule(Board &board, int startX, int startY, int endX, int endY);
 
+        long long generatePawnAttacks(int color, int xPos, int yPos);
+        long long generatePonyAttacks(int xPos, int yPos);
+        long long generateBishopAttacks(Board &board,int xPos, int yPos);
+        long long generateRookAttacks(Board &board, int xPos, int yPos);
+        long long generateQueenAttacks(Board &board,int xPos, int yPos);
+        long long generateKingAttacks(int xPos, int yPos);
+
+        long long whiteAttackSquares(Board &board);
+        long long blackAttackSquares(Board &board);
+
         bool bPawnRule(Board &board, int startX, int startY, int endX, int endY);
         bool bPonyRule(Board &board, int startX, int startY, int endX, int endY);
         bool bBishopRule(Board &board, int startX, int startY, int endX, int endY);
