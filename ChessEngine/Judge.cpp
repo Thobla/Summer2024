@@ -12,40 +12,38 @@
 
 class Board;
 
-bool Judge::isMoveLegal(Board &board, int startX, int startY, int endX, int endY, char pieceType){
+bool Judge::isMoveLegal(Board &board, int startX, int startY, int endX, int endY, char pieceType, int currPlayer){
+    if (pieceType == ' ') return false;
     if(pieceType == 'p'){
-        if(!wPawnRule(board, startX, startY, endX, endY)){return false;};
-    }
-    else if(pieceType == 'P'){
-        if(!bPawnRule(board, startX, startY, endX, endY)){return false;};
+        if(!wPawnRule(board, startX, startY, endX, endY) || currPlayer) return false;
     }
     else if(pieceType == 'h'){
-        if(!wPonyRule(board, startX, startY, endX, endY)){return false;};
-    }
-    else if(pieceType == 'H'){
-        if(!bPonyRule(board, startX, startY, endX, endY)){return false;};
+        if(!wPonyRule(board, startX, startY, endX, endY) || currPlayer) return false;
     }
     else if(pieceType == 'b'){
-        if(!wBishopRule(board, startX, startY, endX, endY)){return false;};
-    }
-    else if(pieceType == 'B'){
-        if(!bBishopRule(board, startX, startY, endX, endY)){return false;};
+        if(!wBishopRule(board, startX, startY, endX, endY) || currPlayer) return false;
     }
     else if(pieceType == 'q'){
-        if(!wQueenRule(board, startX, startY, endX, endY)){return false;};
-    }
-    else if(pieceType == 'Q'){
-        if(!bQueenRule(board, startX, startY, endX, endY)){return false;};
+        if(!wQueenRule(board, startX, startY, endX, endY) || currPlayer) return false;
     }
     else if(pieceType == 'k'){
-        if(!wKingRule(board, startX, startY, endX, endY)){return false;};
+        if(!wKingRule(board, startX, startY, endX, endY) || currPlayer) return false;
+    }
+    else if(pieceType == 'P'){
+        if(!bPawnRule(board, startX, startY, endX, endY) || !currPlayer) return false;
+    }
+    else if(pieceType == 'H'){
+        if(!bPonyRule(board, startX, startY, endX, endY) || !currPlayer) return false;
+    }
+    else if(pieceType == 'B'){
+        if(!bBishopRule(board, startX, startY, endX, endY) || !currPlayer) return false;
+    }
+    else if(pieceType == 'Q'){
+        if(!bQueenRule(board, startX, startY, endX, endY) || !currPlayer) return false;
     }
     else if(pieceType == 'K'){
-        if(!bKingRule(board, startX, startY, endX, endY)){return false;};
+        if(!bKingRule(board, startX, startY, endX, endY) || !currPlayer) return false;
     }
-
-
-
 
     return true;
 }
@@ -57,17 +55,19 @@ bool Judge::isCheck(Board &board, int color){
 bool Judge::bPawnRule(Board &board, int startX, int startY, int endX, int endY){
     unsigned long long endSquare = 1ull << (endX + 8*endY);
     if(endY == startY-1){
-        std::cout << "endY == startY-1 \n";
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){return true;};
+        if((startX == endX + 1 || startX == endX - 1) && (endSquare & board.pessant) == endSquare){
+            board.updateBitboard('p', 1ull << (endX + 8 * (endY + 1)));
+            return true;
+        }
         if((startX == endX+1 || startX == endX-1) && (board.whiteSquares & endSquare)){return true;};
-        std::cout << "not allowed \n";
     }
     else if(endY == 4 && startY == 6){
-        std::cout << "endY == startY-2 == 3 \n";
-        if(startX == endX && pathCleared(board, startX, startY, endX, endY)){return true;};
-        std::cout << "not allowed \n";
+        if(startX == endX && pathCleared(board, startX, startY, endX, endY)){
+            board.newPessant(1ull << (endX + 8 * 5));
+            return true;
+        };
     };
-    std::cout << "neither \n";
     return false;
 };
 
@@ -195,17 +195,19 @@ long long Judge::generateKingAttacks(int xPos, int yPos){
 bool Judge::wPawnRule(Board &board, int startX, int startY, int endX, int endY){
     unsigned long long endSquare = 1ull << (endX + 8*endY);
     if(endY == startY+1){
-        std::cout << "endY == startY+1 \n";
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){return true;};
+        if((startX == endX + 1 || startX == endX - 1) && (endSquare & board.pessant) == endSquare) {
+            board.updateBitboard('P', 1ull << (endX + 8 * (endY - 1)));
+            return true;
+        }
         if((startX == endX+1 || startX == endX-1) && (board.blackSquares & endSquare)){return true;};
-        std::cout << "not allowed \n";
     }
     else if(endY == 3 && startY == 1){
-        std::cout << "endY == startY+2 == 3 \n";
-        if(startX == endX && pathCleared(board, startX, startY, endX, endY)){return true;};
-        std::cout << "not allowed \n";
+        if(startX == endX && pathCleared(board, startX, startY, endX, endY)){
+            board.newPessant(1ull << (endX + 8 * 2));
+            return true;
+        };
     };
-    std::cout << "neither \n";
     return false;
 };
 

@@ -7,7 +7,7 @@ class Board;
 
 class Judge{
     public:
-        bool isMoveLegal(Board &board, int startX, int startY, int endX, int endY, char pieceType);
+        bool isMoveLegal(Board &board, int startX, int startY, int endX, int endY, char pieceType, int currPlayer);
         std::vector<std::tuple<int, int, int, int>> getLegalMoves(Board &board);
         bool isCheck(Board &board, int color);
         bool isMate(Board &board, int color);

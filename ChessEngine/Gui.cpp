@@ -32,15 +32,18 @@ void Gui::displayBoard(Board &board){
     std::cout << std::endl;
 }
 
-void Gui::getUserMove(int &startX, int &startY, int &endX, int &endY){
+void Gui::getUserMove(int &startX, int &startY, int &endX, int &endY, int currPlayer){
+    if (!currPlayer) std::cout << "White's turn \n";
+    else std::cout << "Black's turn \n";
     std::cout << "Type values for startX, startY, endX and endY, on the form: 'x y x y'";
     std::cin >> startX >> startY >> endX >> endY;
 };
 
-void Gui::makeMove(Board &board, Judge &judge){
+void Gui::makeMove(Board &board, Judge &judge, int currPlayer){
     int startX, startY, endX, endY;
-    getUserMove(startX, startY, endX, endY);
-    board.makeMove(startX, startY, endX, endY, judge);
+    getUserMove(startX, startY, endX, endY, currPlayer);
+    board.makeMove(startX, startY, endX, endY, judge, currPlayer);
+
 };
 
 

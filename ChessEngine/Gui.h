@@ -7,8 +7,8 @@ class Gui {
     public:
         Gui();
         void displayBoard(Board &board);
-        void getUserMove(int &startX, int &startY, int &endX, int &endY);
-        void makeMove(Board &board, Judge &judge);
+        void getUserMove(int &startX, int &startY, int &endX, int &endY, int currPlayer);
+        void makeMove(Board &board, Judge &judge, int currPlayer);
 
 };
 

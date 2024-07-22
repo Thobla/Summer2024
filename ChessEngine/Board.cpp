@@ -29,18 +29,13 @@ void Board::initializeBoard(){
     updateSquares();
 };
 
-void Board::makeMove(int startX, int startY, int endX, int endY, Judge &judge){
+void Board::makeMove(int startX, int startY, int endX, int endY, Judge &judge, int currPlayer){
     unsigned long long startSquare = getSquareValue(startX, startY);
     unsigned long long endSquare = getSquareValue(endX, endY);
     char startType = getSquareType(startX, startY);
     char endType = getSquareType(endX, endY);
 
-    if (judge.isMoveLegal(*this, startX, startY, endX, endY, startType)){
-
-        std::cout << "startType: " << startType << "\n";
-        std::cout << "endType: " << endType << "\n";
-        std::cout << "startSquare: " << startSquare << "\n";
-        std::cout << "endSquare: " << endSquare << "\n";
+    if (judge.isMoveLegal(*this, startX, startY, endX, endY, startType, currPlayer)){
 
         updateBitboard(startType, startSquare); // remove type from startSquare
         updateBitboard(startType, endSquare); // add new type to endSquare
@@ -52,6 +47,12 @@ void Board::makeMove(int startX, int startY, int endX, int endY, Judge &judge){
 
     //if(occupiedSquares & )
 
+};
+
+void Board::newPessant(unsigned long long square){
+    if (pessantUpdated) return;
+    pessant = square;
+    pessantUpdated = true;
 };
 
 char Board::getSquareType(int x, int y){
@@ -127,6 +128,8 @@ void Board::updateSquares(){
     blackSquares = bPawns | bKnights | bBishops | bRooks | bQueens | bKing;
     occupiedSquares = whiteSquares | blackSquares;
     freeSquares = ~occupiedSquares;
+    newPessant(0);
+    pessantUpdated = false;
 
 };
 

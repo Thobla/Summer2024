@@ -8,11 +8,13 @@ class Board{
     public:
         Board();
         void initializeBoard();
-        void makeMove(int startX, int startY, int endX, int endY, Judge &judge);
+        void makeMove(int startX, int startY, int endX, int endY, Judge &judge, int currPlayer);
         unsigned long long *getBitboard(char pieceType);
         void updateBitboard(char pieceType, unsigned long long matchValue);
         std::vector<char> getChars();
-        unsigned long long occupiedSquares, freeSquares, whiteSquares, blackSquares;
+        unsigned long long occupiedSquares, freeSquares, whiteSquares, blackSquares, pessant;
+        void newPessant(unsigned long long square);
+        bool pessantUpdated;
         char getSquareType(int x, int y);
 
     private:
