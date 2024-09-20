@@ -52,19 +52,28 @@ bool Judge::isCheck(Board &board, int color){
     return (color == 0) ? (*board.getBitboard('k') & blackAttackSquares(board)) : (*board.getBitboard('K') & whiteAttackSquares(board));
 };
 
+
+// Currently, never becomes mate
+//
+// TODO: FIX THIS METHOD
+bool isMate(Board &board, int color){
+    return false;
+}
+
 bool Judge::bPawnRule(Board &board, int startX, int startY, int endX, int endY){
     unsigned long long endSquare = 1ull << (endX + 8*endY);
     if(endY == startY-1){
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){return true;};
-        if((startX == endX + 1 || startX == endX - 1) && (endSquare & board.pessant) == endSquare){
-            board.updateBitboard('p', 1ull << (endX + 8 * (endY + 1)));
+        std::cout << "end and board: " << endSquare << board.pessant << std::endl;
+        if((startX == endX + 1 || startX == endX - 1) && (endSquare == board.pessant)){
+            board.updateBitboard('p', 1ull << (endX + 8 * (endY + 2)));
             return true;
         }
         if((startX == endX+1 || startX == endX-1) && (board.whiteSquares & endSquare)){return true;};
     }
     else if(endY == 4 && startY == 6){
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){
-            board.newPessant(1ull << (endX + 8 * 5));
+            board.setEnpessantSquare(1ull << (startX + 8 * 6));
             return true;
         };
     };
@@ -196,15 +205,17 @@ bool Judge::wPawnRule(Board &board, int startX, int startY, int endX, int endY){
     unsigned long long endSquare = 1ull << (endX + 8*endY);
     if(endY == startY+1){
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){return true;};
-        if((startX == endX + 1 || startX == endX - 1) && (endSquare & board.pessant) == endSquare) {
-            board.updateBitboard('P', 1ull << (endX + 8 * (endY - 1)));
+        std::cout << "end and board: " << endSquare << "pessant: " << board.pessant << std::endl;
+        std::cout << "endSqure == pessant: " << (endSquare == board.pessant);
+        if((startX == endX + 1 || startX == endX - 1) && (endSquare == board.pessant)) {
+            board.updateBitboard('P', 1ull << (endX + (8 * (endY - 2))));
             return true;
         }
         if((startX == endX+1 || startX == endX-1) && (board.blackSquares & endSquare)){return true;};
     }
     else if(endY == 3 && startY == 1){
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){
-            board.newPessant(1ull << (endX + 8 * 2));
+            board.setEnpessantSquare(1ull << (startX + 8 * startY));
             return true;
         };
     };

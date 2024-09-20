@@ -13,13 +13,15 @@ class Board{
         void updateBitboard(char pieceType, unsigned long long matchValue);
         std::vector<char> getChars();
         unsigned long long occupiedSquares, freeSquares, whiteSquares, blackSquares, pessant;
-        void newPessant(unsigned long long square);
+        // Square that keeps the legal enpessant square if there is any
+        void setEnpessantSquare(unsigned long long square);
         bool pessantUpdated;
         char getSquareType(int x, int y);
 
     private:
         unsigned long long wPawns, wKnights, wBishops, wRooks, wQueens, wKing;
         unsigned long long bPawns, bKnights, bBishops, bRooks, bQueens, bKing;
+        unsigned long long anpessantSquare;
         std::vector<char> chars;
         unsigned long long getSquareValue(int x, int y);
         void updateSquares();

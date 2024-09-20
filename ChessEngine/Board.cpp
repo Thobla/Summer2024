@@ -49,8 +49,7 @@ void Board::makeMove(int startX, int startY, int endX, int endY, Judge &judge, i
 
 };
 
-void Board::newPessant(unsigned long long square){
-    if (pessantUpdated) return;
+void Board::setEnpessantSquare(unsigned long long square){
     pessant = square;
     pessantUpdated = true;
 };
@@ -128,8 +127,10 @@ void Board::updateSquares(){
     blackSquares = bPawns | bKnights | bBishops | bRooks | bQueens | bKing;
     occupiedSquares = whiteSquares | blackSquares;
     freeSquares = ~occupiedSquares;
-    newPessant(0);
-    pessantUpdated = false;
+    std::cout << "pessant updated to: " << pessant << std::endl;
+    std::cout << "inside updateSquares";
+    if (!pessantUpdated){setEnpessantSquare(0);}
+    else{pessantUpdated = false;};
 
 };
 
