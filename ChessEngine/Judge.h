@@ -20,6 +20,8 @@ class Judge{
         bool wQueenRule(Board &board, int startX, int startY, int endX, int endY);
         bool wKingRule(Board &board, int startX, int startY, int endX, int endY);
 
+        void pawnEndOfFile(Board & board, int endX, int endY, int wOrB);
+
         long long generatePawnAttacks(int color, int xPos, int yPos);
         long long generatePonyAttacks(int xPos, int yPos);
         long long generateBishopAttacks(Board &board,int xPos, int yPos);

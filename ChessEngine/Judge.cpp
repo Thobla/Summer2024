@@ -64,12 +64,12 @@ bool Judge::bPawnRule(Board &board, int startX, int startY, int endX, int endY){
     unsigned long long endSquare = 1ull << (endX + 8*endY);
     if(endY == startY-1){
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){return true;};
-        std::cout << "end and board: " << endSquare << board.pessant << std::endl;
+        if((startX == endX+1 || startX == endX-1) && (board.whiteSquares & endSquare)){return true;};
+
         if((startX == endX + 1 || startX == endX - 1) && (endSquare == board.pessant)){
             board.updateBitboard('p', 1ull << (endX + 8 * (endY + 2)));
             return true;
         }
-        if((startX == endX+1 || startX == endX-1) && (board.whiteSquares & endSquare)){return true;};
     }
     else if(endY == 4 && startY == 6){
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){
@@ -200,17 +200,34 @@ long long Judge::generateKingAttacks(int xPos, int yPos){
 };
 
 
+void Judge::pawnEndOfFile(Board &board, int endX, int endY, int currPlayer){
+
+    std::cout << "inside pawnEndOfFile, endy == " << endY << "currPlauer: " << currPlayer << std::endl;
+    // if black
+    if (currPlayer == 1){
+        if (endY == 0){
+            board.updateBitboard('P', 1ull << (endX + endY * 8));
+            board.updateBitboard('Q', 1ull << (endX + endY * 8));
+            std::cout << "updating bitboard" << std::endl;
+        }
+    }
+    // if white
+    else if (currPlayer == 0){
+        if (endY == 7){
+            board.updateBitboard('p', 1ull << (endX + endY * 8));
+            board.updateBitboard('q', 1ull << (endX + endY * 8));
+            std::cout << "updating bitboard" << std::endl;}
+    }
+}
 
 bool Judge::wPawnRule(Board &board, int startX, int startY, int endX, int endY){
     unsigned long long endSquare = 1ull << (endX + 8*endY);
     if(endY == startY+1){
-        if(startX == endX && pathCleared(board, startX, startY, endX, endY)){return true;};
-        std::cout << "end and board: " << endSquare << "pessant: " << board.pessant << std::endl;
-        std::cout << "endSqure == pessant: " << (endSquare == board.pessant);
         if((startX == endX + 1 || startX == endX - 1) && (endSquare == board.pessant)) {
             board.updateBitboard('P', 1ull << (endX + (8 * (endY - 2))));
             return true;
         }
+        if(startX == endX && pathCleared(board, startX, startY, endX, endY)){return true;};
         if((startX == endX+1 || startX == endX-1) && (board.blackSquares & endSquare)){return true;};
     }
     else if(endY == 3 && startY == 1){
@@ -219,6 +236,7 @@ bool Judge::wPawnRule(Board &board, int startX, int startY, int endX, int endY){
             return true;
         };
     };
+    // Queen if end of file
     return false;
 };
 

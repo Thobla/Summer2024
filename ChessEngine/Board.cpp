@@ -36,10 +36,10 @@ void Board::makeMove(int startX, int startY, int endX, int endY, Judge &judge, i
     char endType = getSquareType(endX, endY);
 
     if (judge.isMoveLegal(*this, startX, startY, endX, endY, startType, currPlayer)){
-
         updateBitboard(startType, startSquare); // remove type from startSquare
         updateBitboard(startType, endSquare); // add new type to endSquare
         updateBitboard(endType, endSquare); // remove previous endSquare type
+        if (startType == 'p' || startType == 'P'){judge.pawnEndOfFile(*this, endX, endY, currPlayer);}
 
 
         updateSquares();
