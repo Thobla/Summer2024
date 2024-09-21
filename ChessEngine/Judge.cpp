@@ -9,10 +9,14 @@
 #include "Board.h"
 #include <iostream>
 #include <math.h>
+#include <vector>
 
 class Board;
 
 bool Judge::isMoveLegal(Board &board, int startX, int startY, int endX, int endY, char pieceType, int currPlayer){
+    // Print to test attack square calculations
+    if (currPlayer == 0){printAttackSquares(blackAttackSquares(board));}
+    else {printAttackSquares(whiteAttackSquares(board));}
     if (pieceType == ' ') return false;
     if(pieceType == 'p'){
         if(!wPawnRule(board, startX, startY, endX, endY) || currPlayer) return false;
@@ -56,8 +60,20 @@ bool Judge::isCheck(Board &board, int color){
 // Currently, never becomes mate
 //
 // TODO: FIX THIS METHOD
-bool isMate(Board &board, int color){
+bool Judge::isMate(Board &board, int color){
     return false;
+}
+
+void Judge::printAttackSquares(unsigned long long attackSquares){
+    for (int j = 7; j >= 0; j--){
+        for (int i = 0; i < 8; i++){
+            // Prints 1 if square is under attack, 0 if not
+            if (((1ull << (i + 8*j)) & attackSquares) == (1ull << (i + 8*j))){std::cout << 1;}
+            else {std::cout << 0;}
+
+        }
+        std::cout << std::endl;
+    }
 }
 
 bool Judge::bPawnRule(Board &board, int startX, int startY, int endX, int endY){
@@ -81,22 +97,20 @@ bool Judge::bPawnRule(Board &board, int startX, int startY, int endX, int endY){
 };
 
 long long Judge::whiteAttackSquares(Board &board){
-    long long attackSquares = 0;
+    unsigned long long attackSquares = 0;
     char pieceType;
-
-    for (int x = 0; x <= 7; x++) {
-        for (int y = 0; y <= 7; y++){
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++){
             pieceType = board.getSquareType(x, y);
             switch (pieceType) {
                 case ' ' : break;
-                case 'p' : attackSquares |= generatePawnAttacks(0, x, y);
-                case 'h' : attackSquares |= generatePonyAttacks(x, y);
-                case 'b' : attackSquares |= generateBishopAttacks(board, x, y);
-                case 'r' : attackSquares |= generateRookAttacks(board, x, y);
-                case 'q' : attackSquares |= generateQueenAttacks(board, x, y);
-                case 'k' : attackSquares |= generateKingAttacks(x, y);
+                case 'p' : attackSquares = attackSquares | generatePawnAttacks(0, x, y); break;
+                case 'h' : attackSquares = attackSquares | generatePonyAttacks(x, y); break;
+                case 'b' : attackSquares |= generateBishopAttacks(board, x, y); break;
+                case 'r' : attackSquares |= generateRookAttacks(board, x, y); break;
+                case 'q' : attackSquares |= generateQueenAttacks(board, x, y); break;
+                case 'k' : attackSquares |= generateKingAttacks(x, y); break;
             }
-
         }
     }
     return attackSquares;
@@ -106,17 +120,17 @@ long long Judge::blackAttackSquares(Board &board){
     long long attackSquares = 0;
     char pieceType;
 
-    for (int x = 0; x <= 7; x++) {
-        for (int y = 0; y <= 7; y++){
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++){
             pieceType = board.getSquareType(x, y);
             switch (pieceType) {
                 case ' ' : break;
-                case 'P' : attackSquares |= generatePawnAttacks(1, x, y);
-                case 'H' : attackSquares |= generatePonyAttacks(x, y);
-                case 'B' : attackSquares |= generateBishopAttacks(board, x, y);
-                case 'R' : attackSquares |= generateRookAttacks(board, x, y);
-                case 'Q' : attackSquares |= generateQueenAttacks(board, x, y);
-                case 'K' : attackSquares |= generateKingAttacks(x, y);
+                case 'P' : attackSquares |= generatePawnAttacks(1, x, y); break;
+                case 'H' : attackSquares |= generatePonyAttacks(x, y); break;
+                case 'B' : attackSquares |= generateBishopAttacks(board, x, y); break;
+                case 'R' : attackSquares |= generateRookAttacks(board, x, y); break;
+                case 'Q' : attackSquares |= generateQueenAttacks(board, x, y); break;
+                case 'K' : attackSquares |= generateKingAttacks(x, y); break;
             }
         }
     }
@@ -155,10 +169,10 @@ long long Judge::generateBishopAttacks(Board &board, int xPos, int yPos){
     for (auto &dir : directions){
         int dirX = dir[0], dirY = dir[1];
         int currX = xPos + dirX, currY = yPos + dirY;
-        while (currX >= 0 && currX <= 7 && currY >= 0 && currY <= 8){
+        while (currX >= 0 && currX <= 7 && currY >= 0 && currY <= 7){
             currSquare = (1ULL << (currY * 8 + currX));
             attackSquares |= currSquare;
-            if ((board.occupiedSquares & currSquare) == 1) break;
+            if ((board.occupiedSquares & currSquare) == currSquare) break;
             currX += dirX;
             currY += dirY;
         };
@@ -171,13 +185,14 @@ long long Judge::generateRookAttacks(Board &board, int xPos, int yPos){
     long long currSquare;
 
     int directions[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    int dirX, currX, dirY, currY;
     for (auto &dir : directions){
-        int dirX = dir[0], dirY = dir[1];
-        int currX = xPos + dirX, currY = yPos + dirY;
+        dirX = dir[0], dirY = dir[1];
+        currX = xPos + dirX, currY = yPos + dirY;
         while (currX >= 0 && currX <= 7 && currY >= 0 && currY <= 7){
             currSquare = (1ULL << (currY * 8 + currX));
             attackSquares |= currSquare;
-            if ((board.occupiedSquares & currSquare) == 1) break;
+            if ((board.occupiedSquares & currSquare) == currSquare) break;
             currX += dirX;
             currY += dirY;
         };
@@ -190,10 +205,15 @@ long long Judge::generateQueenAttacks(Board &board, int xPos, int yPos){
 };
 
 long long Judge::generateKingAttacks(int xPos, int yPos){
-    int attackSquares = 0;
+    unsigned long long attackSquares = 0;
     int directions[8][2] = {{1, 1}, {1, 0}, {1, -1}, {0, 1}, {0, -1}, {-1, 1}, {-1, 0}, {-1, -1}};
+    int dirX, currX, dirY, currY;
     for (auto &dir : directions){
-        attackSquares |= (1ULL << ((xPos + dir[0]) + (yPos + dir[1])* 8 ));
+        dirX = dir[0], dirY = dir[1];
+        currX = xPos + dirX, currY = yPos + dirY;
+        if (currX >= 0 && currX < 8 && currY >= 0 && currY < 8){
+            attackSquares |= (1ULL << (currX + currY*8 ));
+        }
     };
 
     return attackSquares;
@@ -202,13 +222,11 @@ long long Judge::generateKingAttacks(int xPos, int yPos){
 
 void Judge::pawnEndOfFile(Board &board, int endX, int endY, int currPlayer){
 
-    std::cout << "inside pawnEndOfFile, endy == " << endY << "currPlauer: " << currPlayer << std::endl;
     // if black
     if (currPlayer == 1){
         if (endY == 0){
             board.updateBitboard('P', 1ull << (endX + endY * 8));
             board.updateBitboard('Q', 1ull << (endX + endY * 8));
-            std::cout << "updating bitboard" << std::endl;
         }
     }
     // if white
@@ -216,7 +234,7 @@ void Judge::pawnEndOfFile(Board &board, int endX, int endY, int currPlayer){
         if (endY == 7){
             board.updateBitboard('p', 1ull << (endX + endY * 8));
             board.updateBitboard('q', 1ull << (endX + endY * 8));
-            std::cout << "updating bitboard" << std::endl;}
+        }
     }
 }
 
@@ -350,12 +368,6 @@ bool Judge::bKingRule(Board &board, int startX, int startY, int endX, int endY){
     return false;
 }
 
-
-
-
-
-
-
 bool Judge::pathCleared(Board &board, int startX, int startY, int endX, int endY){
     int currX = startX;
     int currY = startY;
@@ -394,14 +406,5 @@ bool Judge::pathSemiCleared(Board &board, int startX, int startY, int endX, int 
 
     return true;
 };
-
-
-
-
-
-
-
-
-
 
 

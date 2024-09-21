@@ -12,6 +12,7 @@ class Judge{
         bool isCheck(Board &board, int color);
         bool isMate(Board &board, int color);
         bool isStale(Board &board);
+        void printAttackSquares(unsigned long long attackSquares);
 
         bool wPawnRule(Board &board, int startX, int startY, int endX, int endY);
         bool wPonyRule(Board &board, int startX, int startY, int endX, int endY);

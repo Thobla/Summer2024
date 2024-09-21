@@ -1,5 +1,8 @@
 # Chess Engine
 ## TODO:
+    - Check checking and stuff 
+## Finished:
+    - pawns are finished
 ### Implementation details:
 #### Structs:
 - struct board, keeps all piece longs
