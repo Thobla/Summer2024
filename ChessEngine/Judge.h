@@ -12,7 +12,6 @@ class Judge{
         bool isCheck(Board &board, int color);
         bool isMate(Board &board, int color);
         bool isStale(Board &board);
-        void printAttackSquares(unsigned long long attackSquares);
 
         bool wPawnRule(Board &board, int startX, int startY, int endX, int endY);
         bool wPonyRule(Board &board, int startX, int startY, int endX, int endY);
@@ -30,8 +29,10 @@ class Judge{
         long long generateQueenAttacks(Board &board,int xPos, int yPos);
         long long generateKingAttacks(int xPos, int yPos);
 
+        unsigned long long attackSquares;
         long long whiteAttackSquares(Board &board);
         long long blackAttackSquares(Board &board);
+        void printAttackSquares(unsigned long long attackSquares);
 
         bool bPawnRule(Board &board, int startX, int startY, int endX, int endY);
         bool bPonyRule(Board &board, int startX, int startY, int endX, int endY);

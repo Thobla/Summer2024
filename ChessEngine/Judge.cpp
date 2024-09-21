@@ -353,7 +353,7 @@ bool Judge::bQueenRule(Board &board, int startX, int startY, int endX, int endY)
 bool Judge::wKingRule(Board &board, int startX, int startY, int endX, int endY){
     unsigned long long endSquare = 1ull << (endX + 8*endY);
     bool distIsOne = std::abs(endX - startX) < 2 && std::abs(endY - startY) < 2 && std::abs(endX - startX) + std::abs(endY - startY) > 0;
-    if(!((endSquare & board.whiteSquares) == endSquare)){
+    if(!((endSquare & board.whiteSquares) == endSquare) && !((endSquare & blackAttackSquares(board)) == endSquare)){
         return true;
     }
     return false;
@@ -362,7 +362,7 @@ bool Judge::wKingRule(Board &board, int startX, int startY, int endX, int endY){
 bool Judge::bKingRule(Board &board, int startX, int startY, int endX, int endY){
     unsigned long long endSquare = 1ull << (endX + 8*endY);
     bool distIsOne = std::abs(endX - startX) < 2 && std::abs(endY - startY) < 2 && std::abs(endX - startX) + std::abs(endY - startY) > 0;
-    if(!((endSquare & board.blackSquares) == endSquare)){
+    if(!((endSquare & board.blackSquares) == endSquare) && !((endSquare & whiteAttackSquares(board)) == endSquare)){
         return true;
     }
     return false;
