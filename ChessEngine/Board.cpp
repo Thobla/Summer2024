@@ -6,7 +6,6 @@
 
 
 Board::Board(){
-    chars = {' ', 'p', 'h', 'b', 'r', 'q', 'k', 'P', 'H', 'B', 'R', 'Q', 'K'};
     initializeBoard();
 
 };
@@ -29,16 +28,29 @@ void Board::initializeBoard(){
     updateSquares();
 };
 
+// updates the bitboard after performing a specific move
+void Board::updateBitboardFromMove(char startType, char endType, unsigned long long startSquare, unsigned long long endSquare){
+        updateBitboard(startType, startSquare); // remove type from startSquare
+        updateBitboard(startType, endSquare); // add new type to endSquare
+        updateBitboard(endType, endSquare); // remove previous endSquare type
+        whiteSquares = wPawns | wKnights | wBishops | wRooks | wQueens | wKing;
+        blackSquares = bPawns | bKnights | bBishops | bRooks | bQueens | bKing;
+        occupiedSquares = whiteSquares | blackSquares;
+        freeSquares = ~occupiedSquares;
+
+}
+
 void Board::makeMove(int startX, int startY, int endX, int endY, Judge &judge, int currPlayer){
     unsigned long long startSquare = getSquareValue(startX, startY);
     unsigned long long endSquare = getSquareValue(endX, endY);
     char startType = getSquareType(startX, startY);
     char endType = getSquareType(endX, endY);
 
-    if (judge.isMoveLegal(*this, startX, startY, endX, endY, startType, currPlayer)){
-        updateBitboard(startType, startSquare); // remove type from startSquare
-        updateBitboard(startType, endSquare); // add new type to endSquare
-        updateBitboard(endType, endSquare); // remove previous endSquare type
+    if (judge.isMoveLegal(*this, startX, startY, endX, endY, startType, endType, currPlayer)){
+        updateBitboardFromMove(startType, endType, startSquare, endSquare);
+        //updateBitboard(startType, startSquare); // remove type from startSquare
+        //updateBitboard(startType, endSquare); // add new type to endSquare
+        //updateBitboard(endType, endSquare); // remove previous endSquare type
         if (startType == 'p' || startType == 'P'){judge.pawnEndOfFile(*this, endX, endY, currPlayer);}
 
 
@@ -120,7 +132,6 @@ void Board::updateBitboard(char pieceType, unsigned long long matchValue){
     *bitBoard = *bitBoard ^ matchValue;
 };
 
-std::vector<char> Board::getChars(){return chars;};
 
 void Board::updateSquares(){
     whiteSquares = wPawns | wKnights | wBishops | wRooks | wQueens | wKing;

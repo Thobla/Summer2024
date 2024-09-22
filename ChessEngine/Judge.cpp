@@ -13,47 +13,72 @@
 
 class Board;
 
-bool Judge::isMoveLegal(Board &board, int startX, int startY, int endX, int endY, char pieceType, int currPlayer){
+bool Judge::isMoveLegal(Board &board, int startX, int startY, int endX, int endY, char startType, char endType, int currPlayer){
     // Print to test attack square calculations
     if (currPlayer == 0){printAttackSquares(blackAttackSquares(board));}
     else {printAttackSquares(whiteAttackSquares(board));}
-    if (pieceType == ' ') return false;
-    if(pieceType == 'p'){
+
+    if (!moveSelfcheckSafe(board, startX, startY, endX, endY, startType, endType, currPlayer)){
+        return false;
+    }
+    if (startType == ' ') return false;
+    if(startType == 'p'){
         if(!wPawnRule(board, startX, startY, endX, endY) || currPlayer) return false;
     }
-    else if(pieceType == 'h'){
+    else if(startType == 'h'){
         if(!wPonyRule(board, startX, startY, endX, endY) || currPlayer) return false;
     }
-    else if(pieceType == 'b'){
+    else if(startType == 'b'){
         if(!wBishopRule(board, startX, startY, endX, endY) || currPlayer) return false;
     }
-    else if(pieceType == 'q'){
+    else if(startType == 'q'){
         if(!wQueenRule(board, startX, startY, endX, endY) || currPlayer) return false;
     }
-    else if(pieceType == 'k'){
+    else if(startType == 'k'){
         if(!wKingRule(board, startX, startY, endX, endY) || currPlayer) return false;
     }
-    else if(pieceType == 'P'){
+    else if(startType == 'P'){
         if(!bPawnRule(board, startX, startY, endX, endY) || !currPlayer) return false;
     }
-    else if(pieceType == 'H'){
+    else if(startType == 'H'){
         if(!bPonyRule(board, startX, startY, endX, endY) || !currPlayer) return false;
     }
-    else if(pieceType == 'B'){
+    else if(startType == 'B'){
         if(!bBishopRule(board, startX, startY, endX, endY) || !currPlayer) return false;
     }
-    else if(pieceType == 'Q'){
+    else if(startType == 'Q'){
         if(!bQueenRule(board, startX, startY, endX, endY) || !currPlayer) return false;
     }
-    else if(pieceType == 'K'){
+    else if(startType == 'K'){
         if(!bKingRule(board, startX, startY, endX, endY) || !currPlayer) return false;
     }
 
     return true;
 }
 
+bool Judge::moveSelfcheckSafe(Board &board, int startX, int startY, int endX, int endY, char startType, char endType, int currPlayer){
+    std::cout << "start type: " << startType << std::endl;
+    std::cout << "end type: " << endType << std::endl;
+    Board newBoard = board;
+    unsigned long long startSquare = (1ull << (startX + 8*startY));
+    unsigned long long endSquare = (1ull << (endX + 8*endY));
+    // It updates when we kill a unit, but it acts as if it does not get moved from its own bitboard
+    printAttackSquares(blackAttackSquares(newBoard));
+    //doesnt update the new boards attack squares as intended
+    newBoard.updateBitboardFromMove(startType, endType, startSquare, endSquare);
+    std::cout << "split here" << std::endl;
+    printAttackSquares(blackAttackSquares(newBoard));
+    return !isCheck(newBoard, currPlayer);
+}
+
 bool Judge::isCheck(Board &board, int color){
-    return (color == 0) ? (*board.getBitboard('k') & blackAttackSquares(board)) : (*board.getBitboard('K') & whiteAttackSquares(board));
+    if (color == 0){
+        return (*board.getBitboard('k') & blackAttackSquares(board)) == *board.getBitboard('k');
+    }
+    else {
+        return (*board.getBitboard('K') & whiteAttackSquares(board)) == *board.getBitboard('K');
+    }
+    //return (color == 0) ? ((*board.getBitboard('k') & blackAttackSquares(board)) == *board.getBitboard('k')) : ((*board.getBitboard('K') & whiteAttackSquares(board)) == *board.getBitboard('K'));
 };
 
 
@@ -78,6 +103,7 @@ void Judge::printAttackSquares(unsigned long long attackSquares){
 
 bool Judge::bPawnRule(Board &board, int startX, int startY, int endX, int endY){
     unsigned long long endSquare = 1ull << (endX + 8*endY);
+    //if move puts the king in check, its illegal
     if(endY == startY-1){
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){return true;};
         if((startX == endX+1 || startX == endX-1) && (board.whiteSquares & endSquare)){return true;};
