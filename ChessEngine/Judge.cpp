@@ -52,8 +52,65 @@ bool Judge::isMoveLegal(Board &board, int startX, int startY, int endX, int endY
     else if(startType == 'K'){
         if(!bKingRule(board, startX, startY, endX, endY) || !currPlayer) return false;
     }
+    // Fix this later, note that this gets updated even if not legal which is bad
+    if (startType == 'p' || startType == 'P' && (endY == startY - 2 || endY == startY + 2)){
+        board.setEnpessantSquare(1ull << (startX + 8 * startY));
+    }
 
     return true;
+}
+
+void Judge::findLegalMoves(Board &board, int currPlayer){
+    char posChar;
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++){
+            posChar = board.getSquareType(x, y);
+            if (posChar == ' ') continue;
+            if(posChar == 'p' && currPlayer == 0){
+                findLegalPawnMoves(board, currPlayer, x, y);break;
+            }
+            else if(posChar == 'h'){
+                findLegalHorseMoves(board, currPlayer, x, y);break;
+            }
+            else if(posChar == 'b'){
+                findLegalBishopMoves(board, currPlayer, x, y);break;
+            }
+            else if(posChar == 'q'){
+                findLegalQueenMoves(board, currPlayer, x, y);break;
+            }
+            else if(posChar == 'k'){
+                findLegalKingMoves(board, currPlayer, x, y);break;
+            }
+            else if(posChar == 'P'){
+                findLegalPawnMoves(board, currPlayer, x, y);break;
+            }
+            else if(posChar == 'H'){
+                findLegalHorseMoves(board, currPlayer, x, y);break;
+            }
+            else if(posChar == 'B'){
+                findLegalBishopMoves(board, currPlayer, x, y);break;
+            }
+            else if(posChar == 'Q'){
+                findLegalQueenMoves(board, currPlayer, x, y);break;
+            }
+            else if(posChar == 'K'){
+                findLegalKingMoves(board, currPlayer, x, y);break;
+            }
+        }
+    }
+}
+
+// Not sure how to implement
+void Judge::findLegalPawnMoves(Board &board, int currPlayer, int x, int y){
+    int wPawnMoves[4][2] = {7, 8, 9, 16};
+    int bPawnMoves[4][2] = {-7, -8, -9, -16};
+    int square = x + 8*y;
+    if (currPlayer){
+        for (int i = 0; i < 4; i++){
+
+        }
+    }
+    
 }
 
 bool Judge::moveSelfcheckSafe(Board &board, int startX, int startY, int endX, int endY, char startType, char endType, int currPlayer){
@@ -82,9 +139,6 @@ bool Judge::isCheck(Board &board, int color){
 };
 
 
-// Currently, never becomes mate
-//
-// TODO: FIX THIS METHOD
 bool Judge::isMate(Board &board, int color){
     return false;
 }
@@ -115,7 +169,6 @@ bool Judge::bPawnRule(Board &board, int startX, int startY, int endX, int endY){
     }
     else if(endY == 4 && startY == 6){
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){
-            board.setEnpessantSquare(1ull << (startX + 8 * 6));
             return true;
         };
     };
@@ -276,7 +329,6 @@ bool Judge::wPawnRule(Board &board, int startX, int startY, int endX, int endY){
     }
     else if(endY == 3 && startY == 1){
         if(startX == endX && pathCleared(board, startX, startY, endX, endY)){
-            board.setEnpessantSquare(1ull << (startX + 8 * startY));
             return true;
         };
     };
