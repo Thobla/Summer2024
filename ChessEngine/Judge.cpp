@@ -102,12 +102,15 @@ void Judge::findLegalMoves(Board &board, int currPlayer){
 
 // Not sure how to implement
 void Judge::findLegalPawnMoves(Board &board, int currPlayer, int x, int y){
-    int wPawnMoves[4][2] = {7, 8, 9, 16};
-    int bPawnMoves[4][2] = {-7, -8, -9, -16};
-    int square = x + 8*y;
+    int wPawnMoves[2][4] = {{-1, 0, 1, 0}, {1, 1, 1, 2}};
+    int bPawnMoves[2][4] = {{-1, 0, 1, 0}, {-1, -1, -1, -2}};
+    char startChar = board.getSquareType(x, y);
+    char endChar;
     if (currPlayer){
         for (int i = 0; i < 4; i++){
-
+            endChar = board.getSquareType(x + wPawnMoves[0][i], y + wPawnMoves[1][i]);
+            //checking if making the moves are legal
+            isMoveLegal(board, x, y, x + wPawnMoves[0][i], y + wPawnMoves[1][i], startChar, endChar, currPlayer);
         }
     }
     
