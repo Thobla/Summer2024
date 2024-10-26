@@ -5,8 +5,8 @@
         bool isStale(Board &board);
 
  */
-#include "Judge.h"
 #include "Board.h"
+#include "Judge.h"
 #include <iostream>
 #include <math.h>
 #include <vector>
@@ -60,48 +60,20 @@ bool Judge::isMoveLegal(Board &board, int startX, int startY, int endX, int endY
     return true;
 }
 
-void Judge::findLegalMoves(Board &board, int currPlayer){
-    char posChar;
-    for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++){
-            posChar = board.getSquareType(x, y);
-            if (posChar == ' ') continue;
-            if(posChar == 'p' && currPlayer == 0){
-                findLegalPawnMoves(board, currPlayer, x, y);break;
-            }
-            else if(posChar == 'h'){
-                findLegalHorseMoves(board, currPlayer, x, y);break;
-            }
-            else if(posChar == 'b'){
-                findLegalBishopMoves(board, currPlayer, x, y);break;
-            }
-            else if(posChar == 'q'){
-                findLegalQueenMoves(board, currPlayer, x, y);break;
-            }
-            else if(posChar == 'k'){
-                findLegalKingMoves(board, currPlayer, x, y);break;
-            }
-            else if(posChar == 'P'){
-                findLegalPawnMoves(board, currPlayer, x, y);break;
-            }
-            else if(posChar == 'H'){
-                findLegalHorseMoves(board, currPlayer, x, y);break;
-            }
-            else if(posChar == 'B'){
-                findLegalBishopMoves(board, currPlayer, x, y);break;
-            }
-            else if(posChar == 'Q'){
-                findLegalQueenMoves(board, currPlayer, x, y);break;
-            }
-            else if(posChar == 'K'){
-                findLegalKingMoves(board, currPlayer, x, y);break;
-            }
-        }
-    }
-}
+// legalMoves
+//void Judge::updateLegalMoves(Board &board, int currPlayer){
+//  std::vector<Board::legalMove> allLegalMoves;
+//  get all legal moves of piece types, and append all to 
+//  board.legalMoves = std::vector<Board::legalMove>();
+//}
+
+
+
 
 // Not sure how to implement
-void Judge::findLegalPawnMoves(Board &board, int currPlayer, int x, int y){
+std::vector<Board::boardMove> Judge::findLegalPawnMoves(Board &board, int currPlayer, int x, int y){
+    std::vector<Board::boardMove> legalMoves;
+    //Board::boardMove move = {};
     int wPawnMoves[2][4] = {{-1, 0, 1, 0}, {1, 1, 1, 2}};
     int bPawnMoves[2][4] = {{-1, 0, 1, 0}, {-1, -1, -1, -2}};
     char startChar = board.getSquareType(x, y);
@@ -110,7 +82,9 @@ void Judge::findLegalPawnMoves(Board &board, int currPlayer, int x, int y){
         for (int i = 0; i < 4; i++){
             endChar = board.getSquareType(x + wPawnMoves[0][i], y + wPawnMoves[1][i]);
             //checking if making the moves are legal
-            isMoveLegal(board, x, y, x + wPawnMoves[0][i], y + wPawnMoves[1][i], startChar, endChar, currPlayer);
+            if (isMoveLegal(board, x, y, x + wPawnMoves[0][i], y + wPawnMoves[1][i], startChar, endChar, currPlayer)){
+                legalMoves.push_back(move);
+            };
         }
     }
     

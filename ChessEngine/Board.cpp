@@ -1,5 +1,6 @@
 #include "Board.h"
 #include <math.h>
+#include <utility>
 #include <vector>
 #include <iostream>
 #include "Judge.h"
@@ -8,6 +9,14 @@
 Board::Board(){
     initializeBoard();
 
+};
+
+struct Board::boardPosition{
+    int x, y;
+};
+
+struct Board::boardMove{
+    std::pair<Board::boardPosition, Board::boardPosition> move;
 };
 
 void Board::initializeBoard(){
@@ -138,8 +147,6 @@ void Board::updateSquares(){
     blackSquares = bPawns | bKnights | bBishops | bRooks | bQueens | bKing;
     occupiedSquares = whiteSquares | blackSquares;
     freeSquares = ~occupiedSquares;
-    std::cout << "pessant updated to: " << pessant << std::endl;
-    std::cout << "inside updateSquares";
     if (!pessantUpdated){setEnpessantSquare(0);}
     else{pessantUpdated = false;};
 

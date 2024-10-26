@@ -2,23 +2,24 @@
 #define JUDGE_H
 
 #include <vector>
+#include "Board.h"
 
 class Board;
 
 class Judge{
     public:
         bool isMoveLegal(Board &board, int startX, int startY, int endX, int endY, char startType, char endType, int currPlayer);
-        //std::vector<std::tuple<int, int, int, int>> getLegalMoves(Board &board);
+        void updateLegalMoves(Board &board);
         // Table of the current legal moves to make, if there are none, its mate or pate
-        std::vector<int> legalMoves[64];
+        std::vector<Board::boardMove> legalMoves;
         // Method for calculating all the legal moves.
-        void findLegalMoves(Board &board, int currPlayer);
-        void findLegalPawnMoves(Board &board, int currPlayer, int x, int y);
-        void findLegalHorseMoves(Board &board, int currPlayer, int x, int y);
-        void findLegalBishopMoves(Board &board, int currPlayer, int x, int y);
-        void findLegalRookMoves(Board &board, int currPlayer, int x, int y);
-        void findLegalQueenMoves(Board &board, int currPlayer, int x, int y);
-        void findLegalKingMoves(Board &board, int currPlayer, int x, int y);
+        std::vector<Board::boardMove> findLegalMoves(Board &board, int currPlayer);
+        std::vector<Board::boardMove> findLegalPawnMoves(Board &board, int currPlayer, int x, int y);
+        std::vector<Board::boardMove> findLegalHorseMoves(Board &board, int currPlayer, int x, int y);
+        std::vector<Board::boardMove> findLegalBishopMoves(Board &board, int currPlayer, int x, int y);
+        std::vector<Board::boardMove> findLegalRookMoves(Board &board, int currPlayer, int x, int y);
+        std::vector<Board::boardMove> findLegalQueenMoves(Board &board, int currPlayer, int x, int y);
+        std::vector<Board::boardMove> findLegalKingMoves(Board &board, int currPlayer, int x, int y);
 
         struct p_moves;struct P_moves;struct kK_moves;struct qQ_moves; struct bB_moves;struct rR_moves;struct hH_moves;
 

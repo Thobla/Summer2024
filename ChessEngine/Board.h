@@ -1,5 +1,6 @@
 #ifndef BOARD_H
 #define BOARD_H
+#include <utility>
 #include <vector>
 
 class Judge;
@@ -7,12 +8,15 @@ class Judge;
 class Board{
     public:
         Board();
+        struct boardPosition;
+        struct boardMove;
         void initializeBoard();
         void makeMove(int startX, int startY, int endX, int endY, Judge &judge, int currPlayer);
         unsigned long long *getBitboard(char pieceType);
         void updateBitboard(char pieceType, unsigned long long matchValue);
         void updateBitboardFromMove(char startType, char endType, unsigned long long startSquare, unsigned long long endSquare);
         unsigned long long occupiedSquares, freeSquares, whiteSquares, blackSquares, pessant;
+        std::vector<boardMove> legalMoves;
         //unsigned long long pessant;
         // Square that keeps the legal enpessant square if there is any
         void setEnpessantSquare(unsigned long long square);
